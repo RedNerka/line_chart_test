@@ -102,7 +102,7 @@ def data_process(start):
         plot_data_norm.extend(vals[1])
         plot_dates.extend(vals[2])  # 每个val都用相同的date打上标签
 
-    idx = range(len(plot_data) - 1, -1, -1)
+    idx = range(0, len(plot_data))
         
     res = pd.DataFrame({
         'idx': idx,
