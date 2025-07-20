@@ -73,15 +73,10 @@ def get_gdp_data():
 # Add some spacing
 # ''
 # ''
+raw_df = get_gdp_data()
 
-# min_value = raw_df['Year'].min()
-# max_value = raw_df['Year'].max()
-
-# from_year, to_year = st.slider(
-#     'What time range are you interested in?',
-#     min_value=min_value,
-#     max_value=max_value,
-#     value=[min_value, max_value])
+min_value = 0
+max_value = len(raw_df)
 
 # selected_countries = st.multiselect(
 #     'Which product would you like to view?',
@@ -92,23 +87,22 @@ def get_gdp_data():
 # ''
 # ''
 
-# Filter the data
-# filtered_gdp_df = gdp_df[
-#     (gdp_df['Country Code'].isin(selected_countries))
-#     & (gdp_df['Year'] <= to_year)
-#     & (from_year <= gdp_df['Year'])
-# ]
-
 st.header('Realtime YTM', divider='gray')
 
 ''
 
+count = st.slider(
+    'How many data points to show? 4800~5400 points per day',
+    min_value=min_value,
+    max_value=max_value,
+    value=max_value)
+
+filtered_df = raw_df.iloc[-count:]
+
 placeholder_1 = st.empty()
 placeholder_2 = st.empty()
 
-raw_df = get_gdp_data()
-
-line_chart = alt.Chart(raw_df).mark_line().encode(
+line_chart = alt.Chart(filtered_df).mark_line().encode(
     x=alt.X('idx:Q', title='时间'),
     y=alt.Y('ytm_diff:Q', title='息差', scale=alt.Scale(domain=[60, 80])),
     tooltip=[
@@ -119,10 +113,9 @@ line_chart = alt.Chart(raw_df).mark_line().encode(
 with placeholder_1:
     st.altair_chart(line_chart, use_container_width=True)
 
-
 ''
 
-line_chart_2 = alt.Chart(raw_df).mark_line().encode(
+line_chart_2 = alt.Chart(filtered_df).mark_line().encode(
     x=alt.X('idx:Q', title='时间'),
     y=alt.Y('ytm_diff_norm:Q', title='标准化息差', scale=alt.Scale(domain=[-6, 6])),
     tooltip=[
