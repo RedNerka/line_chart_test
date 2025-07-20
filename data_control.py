@@ -109,7 +109,7 @@ def data_process(start):
         'ytm_diff': plot_data,
         'ytm_diff_norm': plot_data_norm,
         'time': plot_dates
-    }).sort_values(by='idx')
+    })
     res.to_csv(PLOT_PATH + 'plot_data.csv', index=False, header=True)
     return len(res)
 
