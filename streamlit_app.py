@@ -111,56 +111,51 @@ st.header('Realtime YTM', divider='gray')
 #     x_label='time',
 #     color='Country Code',
 # )
-placeholder = st.empty()
+raw_df = get_gdp_data()
 
-while True:
-    raw_df = get_gdp_data()
+line_chart = alt.Chart(raw_df).mark_line().encode(
+    x=alt.X('idx:Q', title='时间'),
+    y=alt.Y('ytm_diff:Q', title='YTM息差')
+)
 
-    line_chart = alt.Chart(raw_df).mark_line().encode(
-        x=alt.X('idx:Q', title='时间'),
-        y=alt.Y('ytm_diff:Q', title='YTM息差')
-    )
+points = alt.Chart(raw_df).mark_circle(opacity=0).encode(
+    x='idx:Q',
+    y='ytm_diff:Q',
+    tooltip=[
+        alt.Tooltip('time:N', title='时间'),
+        alt.Tooltip('ytm_diff:Q', title='YTM 差值'),
+        alt.Tooltip('idx:Q', title='数据点索引')
+    ]
+).interactive()
 
-    points = alt.Chart(raw_df).mark_circle(opacity=0).encode(
-        x='idx:Q',
-        y='ytm_diff:Q',
-        tooltip=[
-            alt.Tooltip('time:N', title='时间'),
-            alt.Tooltip('ytm_diff:Q', title='YTM 差值'),
-            alt.Tooltip('idx:Q', title='数据点索引')
-        ]
-    ).interactive()
+nearest = alt.selection(type='single', nearest=True, on='mouseover', fields=['date'], empty='none')
 
-    nearest = alt.selection(type='single', nearest=True, on='mouseover', fields=['date'], empty='none')
+selectors = alt.Chart(raw_df).mark_point().encode(
+    x='idx:Q',
+    opacity=alt.value(0)
+).add_selection(
+    nearest
+)
 
-    selectors = alt.Chart(raw_df).mark_point().encode(
-        x='idx:Q',
-        opacity=alt.value(0)
-    ).add_selection(
-        nearest
-    )
+rules = alt.Chart(raw_df).mark_rule(color='gray').encode(
+    x='idx:Q',
+).transform_filter(nearest)
 
-    rules = alt.Chart(raw_df).mark_rule(color='gray').encode(
-        x='idx:Q',
-    ).transform_filter(nearest)
+points = alt.Chart(raw_df).mark_circle().encode(
+    x='idx:Q',
+    y='ytm_diff:Q'
+).transform_filter(nearest)
 
-    points = alt.Chart(raw_df).mark_circle().encode(
-        x='idx:Q',
-        y='ytm_diff:Q'
-    ).transform_filter(nearest)
+text = alt.Chart(raw_df).mark_text(align='left', dx=5, dy=-5).encode(
+    x='idx:Q',
+    y='ytm_diff:Q',
+    text='ytm_diff:Q'
+).transform_filter(nearest)
 
-    text = alt.Chart(raw_df).mark_text(align='left', dx=5, dy=-5).encode(
-        x='idx:Q',
-        y='ytm_diff:Q',
-        text='ytm_diff:Q'
-    ).transform_filter(nearest)
+chart = alt.layer(line_chart, selectors, points, rules, text).interactive()
 
-    chart = alt.layer(line_chart, selectors, points, rules, text).interactive()
+st.altair_chart(chart, use_container_width=True)
 
-    with placeholder:
-        st.altair_chart(chart, use_container_width=True)
-    
-    time.sleep(10)
 
 # ''
 # ''
