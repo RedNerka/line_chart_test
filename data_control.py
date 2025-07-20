@@ -58,7 +58,7 @@ def push_commit():
 
 def data_process(start):
     dates = []
-    for i in range(1, 61):
+    for i in range(60, 0, -1):
         curr = (pd.to_datetime(start).date() - pd.Timedelta(days=i)).strftime('%Y%m%d')
         dates.append(curr)
 
