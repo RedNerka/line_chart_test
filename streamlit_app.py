@@ -3,6 +3,7 @@ import pandas as pd
 import math
 from pathlib import Path
 import altair as alt
+import time
 
 # Set the title and favicon that appear in the Browser's tab bar.
 st.set_page_config(
@@ -58,8 +59,6 @@ def get_gdp_data():
 
     return raw_df
 
-raw_df = get_gdp_data()
-
 # -----------------------------------------------------------------------------
 # Draw the actual page
 
@@ -112,17 +111,56 @@ st.header('Realtime YTM', divider='gray')
 #     x_label='time',
 #     color='Country Code',
 # )
-line_chart = alt.Chart(raw_df).mark_line().encode(
-    x=alt.X('idx:Q', title='时间'),
-    y=alt.Y('ytm_diff:Q', title='YTM息差'),
-    tooltip=[
-        alt.Tooltip('time:T', title='时间'),
-        alt.Tooltip('ytm_diff:Q', title='YTM 差值'),
-        alt.Tooltip('idx:Q', title='数据点索引')
-    ]
-).interactive()
+placeholder = st.empty()
 
-st.altair_chart(line_chart, use_container_width=True)
+while True:
+    raw_df = get_gdp_data()
+
+    line_chart = alt.Chart(raw_df).mark_line().encode(
+        x=alt.X('idx:Q', title='时间'),
+        y=alt.Y('ytm_diff:Q', title='YTM息差')
+    )
+
+    points = alt.Chart(raw_df).mark_circle(opacity=0).encode(
+        x='idx:Q',
+        y='ytm_diff:Q',
+        tooltip=[
+            alt.Tooltip('time:N', title='时间'),
+            alt.Tooltip('ytm_diff:Q', title='YTM 差值'),
+            alt.Tooltip('idx:Q', title='数据点索引')
+        ]
+    ).interactive()
+
+    nearest = alt.selection(type='single', nearest=True, on='mouseover', fields=['date'], empty='none')
+
+    selectors = alt.Chart(raw_df).mark_point().encode(
+        x='idx:Q',
+        opacity=alt.value(0)
+    ).add_selection(
+        nearest
+    )
+
+    rules = alt.Chart(raw_df).mark_rule(color='gray').encode(
+        x='idx:Q',
+    ).transform_filter(nearest)
+
+    points = alt.Chart(raw_df).mark_circle().encode(
+        x='idx:Q',
+        y='ytm_diff:Q'
+    ).transform_filter(nearest)
+
+    text = alt.Chart(raw_df).mark_text(align='left', dx=5, dy=-5).encode(
+        x='idx:Q',
+        y='ytm_diff:Q',
+        text='ytm_diff:Q'
+    ).transform_filter(nearest)
+
+    chart = alt.layer(line_chart, selectors, points, rules, text).interactive()
+
+    with placeholder:
+        st.altair_chart(chart, use_container_width=True)
+    
+    time.sleep(10)
 
 # ''
 # ''
