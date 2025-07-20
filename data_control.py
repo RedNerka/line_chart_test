@@ -102,14 +102,14 @@ def data_process(start):
         plot_data_norm.extend(vals[1])
         plot_dates.extend(vals[2])  # 每个val都用相同的date打上标签
 
-    idx = range(len(plot_data))
+    idx = range(len(plot_data) - 1, -1, -1)
         
     res = pd.DataFrame({
         'idx': idx,
         'ytm_diff': plot_data,
         'ytm_diff_norm': plot_data_norm,
         'time': plot_dates
-    })
+    }).sort_values(by='idx')
     res.to_csv(PLOT_PATH + 'plot_data.csv', index=False, header=True)
     return len(res)
 
@@ -159,8 +159,7 @@ def live_data_process(read_index, write_index, mean, std):
         'time': timestr
     })
 
-    with FileLock(f'{WORK_DIR}/plot_data.lock'):
-        new_data.to_csv(PLOT_PATH + 'plot_data.csv', mode='a', index=False, header=False)
+    new_data.to_csv(PLOT_PATH + 'plot_data.csv', mode='a', index=False, header=False)
     return (read_index, write_index)
 
 def main():
@@ -172,23 +171,30 @@ def main():
 
     read_idx = 0
     write_idx = data_process(start)
-
+    print('hist data processing...done')
     push_commit()
+    print('data update push...done')
 
     while True:
         is_rth, curr_time = checkRTH(is_rth)
 
         if is_rth:
+            print('in rth, getting data...')
             with FileLock(LOCK_PATH + f'{FUT1}.lock'):
                 getData(FUT1)
             with FileLock(LOCK_PATH + f'{FUT2}.lock'):
                 getData(FUT2)
+            print('live data processing...')
             read_idx, write_idx = live_data_process(read_idx, write_idx, mean_val, std_val)
+            print('new data update push...')
             push_commit()
+            print('sleep 10')
             time.sleep(10)
         elif not is_rth and curr_time > rth_end:
+            print('job done, exiting...')
             break
         else:
+            print('not in rth...sleep 60')
             time.sleep(60)
             
 

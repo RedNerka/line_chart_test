@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import math
 from pathlib import Path
+import altair as alt
 
 # Set the title and favicon that appear in the Browser's tab bar.
 st.set_page_config(
@@ -22,11 +23,11 @@ def get_gdp_data():
     """
 
     # Instead of a CSV on disk, you could read from an HTTP endpoint here too.
-    DATA_FILENAME = Path(__file__).parent/'data/gdp_data.csv'
-    raw_gdp_df = pd.read_csv(DATA_FILENAME)
+    DATA_FILENAME = Path(__file__).parent/'plot_data/plot_data.csv'
+    raw_df = pd.read_csv(DATA_FILENAME)
 
-    MIN_YEAR = 1960
-    MAX_YEAR = 2022
+    # MIN_YEAR = 1960
+    # MAX_YEAR = 2022
 
     # The data above has columns like:
     # - Country Name
@@ -45,19 +46,19 @@ def get_gdp_data():
     # - GDP
     #
     # So let's pivot all those year-columns into two: Year and GDP
-    gdp_df = raw_gdp_df.melt(
-        ['Country Code'],
-        [str(x) for x in range(MIN_YEAR, MAX_YEAR + 1)],
-        'Year',
-        'GDP',
-    )
+    # gdp_df = raw_df.melt(
+    #     ['Country Code'],
+    #     [str(x) for x in range(MIN_YEAR, MAX_YEAR + 1)],
+    #     'Year',
+    #     'GDP',
+    # )
 
-    # Convert years from string to integers
-    gdp_df['Year'] = pd.to_numeric(gdp_df['Year'])
+    # # Convert years from string to integers
+    # gdp_df['Year'] = pd.to_numeric(gdp_df['Year'])
 
-    return gdp_df
+    return raw_df
 
-gdp_df = get_gdp_data()
+raw_df = get_gdp_data()
 
 # -----------------------------------------------------------------------------
 # Draw the actual page
@@ -72,44 +73,56 @@ But it's otherwise a great (and did I mention _free_?) source of data.
 '''
 
 # Add some spacing
-''
-''
+# ''
+# ''
 
-min_value = gdp_df['Year'].min()
-max_value = gdp_df['Year'].max()
+# min_value = raw_df['Year'].min()
+# max_value = raw_df['Year'].max()
 
-from_year, to_year = st.slider(
-    'What time range are you interested in?',
-    min_value=min_value,
-    max_value=max_value,
-    value=[min_value, max_value])
+# from_year, to_year = st.slider(
+#     'What time range are you interested in?',
+#     min_value=min_value,
+#     max_value=max_value,
+#     value=[min_value, max_value])
 
-selected_countries = st.multiselect(
-    'Which product would you like to view?',
-    ['ZB', 'ZN'],
-    ['ZB', 'ZN'])
+# selected_countries = st.multiselect(
+#     'Which product would you like to view?',
+#     ['ZB', 'ZN'],
+#     ['ZB', 'ZN'])
 
-''
-''
-''
+# ''
+# ''
+# ''
 
 # Filter the data
-filtered_gdp_df = gdp_df[
-    (gdp_df['Country Code'].isin(selected_countries))
-    & (gdp_df['Year'] <= to_year)
-    & (from_year <= gdp_df['Year'])
-]
+# filtered_gdp_df = gdp_df[
+#     (gdp_df['Country Code'].isin(selected_countries))
+#     & (gdp_df['Year'] <= to_year)
+#     & (from_year <= gdp_df['Year'])
+# ]
 
 st.header('Realtime YTM', divider='gray')
 
 ''
 
-st.line_chart(
-    filtered_gdp_df,
-    x='Year',
-    y='GDP',
-    color='Country Code',
-)
+# st.line_chart(
+#     raw_df,
+#     x='idx',
+#     y='ytm_diff',
+#     x_label='time',
+#     color='Country Code',
+# )
+line_chart = alt.Chart(raw_df).mark_line().encode(
+    x=alt.X('idx:Q', title='时间'),
+    y=alt.Y('ytm_diff:Q', title='YTM息差'),
+    tooltip=[
+        alt.Tooltip('time:T', title='时间'),
+        alt.Tooltip('ytm_diff:Q', title='YTM 差值'),
+        alt.Tooltip('idx:Q', title='数据点索引')
+    ]
+).interactive()
+
+st.altair_chart(line_chart, use_container_width=True)
 
 # ''
 # ''
