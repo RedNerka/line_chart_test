@@ -106,35 +106,32 @@ st.header('Realtime YTM', divider='gray')
 placeholder_1 = st.empty()
 placeholder_2 = st.empty()
 
-while True:
-    raw_df = get_gdp_data()
+raw_df = get_gdp_data()
 
-    line_chart = alt.Chart(raw_df).mark_line().encode(
-        x=alt.X('idx:Q', title='时间'),
-        y=alt.Y('ytm_diff:Q', title='息差', scale=alt.Scale(domain=[60, 80])),
-        tooltip=[
-            alt.Tooltip('time:N', title='时间'),
-            alt.Tooltip('ytm_diff:Q', title='息差')
-        ]
-    ).interactive()
-    with placeholder_1:
-        st.altair_chart(line_chart, use_container_width=True)
+line_chart = alt.Chart(raw_df).mark_line().encode(
+    x=alt.X('idx:Q', title='时间'),
+    y=alt.Y('ytm_diff:Q', title='息差', scale=alt.Scale(domain=[60, 80])),
+    tooltip=[
+        alt.Tooltip('time:N', title='时间'),
+        alt.Tooltip('ytm_diff:Q', title='息差')
+    ]
+).interactive()
+with placeholder_1:
+    st.altair_chart(line_chart, use_container_width=True)
 
 
-    ''
+''
 
-    line_chart_2 = alt.Chart(raw_df).mark_line().encode(
-        x=alt.X('idx:Q', title='时间'),
-        y=alt.Y('ytm_diff_norm:Q', title='标准化息差', scale=alt.Scale(domain=[-4, 4])),
-        tooltip=[
-            alt.Tooltip('time:N', title='时间'),
-            alt.Tooltip('ytm_diff_norm:Q', title='标准化息差')
-        ]
-    ).interactive()
-    with placeholder_2:
-        st.altair_chart(line_chart_2, use_container_width=True)
-
-    time.sleep(30)
+line_chart_2 = alt.Chart(raw_df).mark_line().encode(
+    x=alt.X('idx:Q', title='时间'),
+    y=alt.Y('ytm_diff_norm:Q', title='标准化息差', scale=alt.Scale(domain=[-6, 6])),
+    tooltip=[
+        alt.Tooltip('time:N', title='时间'),
+        alt.Tooltip('ytm_diff_norm:Q', title='标准化息差')
+    ]
+).interactive()
+with placeholder_2:
+    st.altair_chart(line_chart_2, use_container_width=True)
 
 
 # first_year = gdp_df[gdp_df['Year'] == from_year]
