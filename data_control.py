@@ -29,7 +29,7 @@ rth_end = dtime(16, 0)
 def getData(future):
     filename = f'{future}_live_data_MIDPOINT.csv'
     path = LIVE_DATA_SRC_PATH + filename
-    shutil.move(path, LIVE_DATA_PATH + filename)
+    shutil.copy(path, LIVE_DATA_PATH + filename)
 
 def move_data(dt):
     all_files = [file for file in os.listdir(LIVE_DATA_PATH) if file.endswith('.csv')]
