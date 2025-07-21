@@ -104,7 +104,7 @@ placeholder_2 = st.empty()
 
 line_chart = alt.Chart(filtered_df).mark_line().encode(
     x=alt.X('idx:Q', title='时间'),
-    y=alt.Y('ytm_diff:Q', title='息差', scale=alt.Scale(domain=[60, 80])),
+    y=alt.Y('ytm_diff:Q', title='息差', scale=alt.Scale(nice=True)),
     tooltip=[
         alt.Tooltip('time:N', title='时间'),
         alt.Tooltip('ytm_diff:Q', title='息差')
@@ -117,7 +117,7 @@ with placeholder_1:
 
 line_chart_2 = alt.Chart(filtered_df).mark_line().encode(
     x=alt.X('idx:Q', title='时间'),
-    y=alt.Y('ytm_diff_norm:Q', title='标准化息差', scale=alt.Scale(domain=[-6, 6])),
+    y=alt.Y('ytm_diff_norm:Q', title='标准化息差', scale=alt.Scale(nice=True)),
     tooltip=[
         alt.Tooltip('time:N', title='时间'),
         alt.Tooltip('ytm_diff_norm:Q', title='标准化息差')
