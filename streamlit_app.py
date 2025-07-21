@@ -95,7 +95,7 @@ count = st.slider(
     'How many data points to show? 4800~5400 points per day',
     min_value=min_value,
     max_value=max_value,
-    value=8000)
+    value=5400)
 
 filtered_df = raw_df.iloc[-count:]
 
