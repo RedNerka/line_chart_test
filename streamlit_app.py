@@ -75,7 +75,7 @@ def get_gdp_data():
 # ''
 raw_df = get_gdp_data()
 
-min_value = 0
+min_value = 3000
 max_value = len(raw_df)
 
 # selected_countries = st.multiselect(
@@ -95,7 +95,7 @@ count = st.slider(
     'How many data points to show? 4800~5400 points per day',
     min_value=min_value,
     max_value=max_value,
-    value=max_value)
+    value=min_value)
 
 filtered_df = raw_df.iloc[-count:]
 
