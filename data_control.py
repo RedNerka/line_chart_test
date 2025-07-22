@@ -24,7 +24,7 @@ PLOT_PATH = f'{WORK_DIR}/plot_data/'
 tz = pytz.timezone("US/Central")
 
 rth_start = dtime(8, 30)
-rth_end = dtime(16, 0)
+rth_end = dtime(15, 0)
 
 def getData(future):
     filename = f'{future}_live_data_MIDPOINT.csv'
@@ -35,9 +35,10 @@ def move_data(dt):
     all_files = [file for file in os.listdir(LIVE_DATA_PATH) if file.endswith('.csv')]
     if len(all_files) <= 0:
         return
-    dt = dt.date().strftime('%Y%m%d')
     for file in all_files:
-        shutil.move(LIVE_DATA_PATH + file, HIST_DATA_PATH + dt + '_' + file)
+        shutil.rmtree(file)
+    dt = dt.date().strftime('%Y%m%d')
+    shutil.copy(HIST_DATA_SRC_PATH + dt + '_' + file, HIST_DATA_PATH + dt + '_' + file)
 
 def checkRTH(is_rth): #checked
     curr_time = time.time()
@@ -191,6 +192,7 @@ def main():
             print('sleep 10')
             time.sleep(10)
         elif not is_rth and curr_time > rth_end:
+            push_commit()
             print('job done, exiting...')
             break
         else:
