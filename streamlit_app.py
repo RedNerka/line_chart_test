@@ -76,9 +76,6 @@ def get_gdp_data():
 # ''
 st_autorefresh(interval=15 * 1000, key="data-refresh")
 
-if int(time.time()) % 60 < 2:  # 每分钟拉一次
-    os.system("git pull origin main")
-
 raw_df = get_gdp_data()
 
 min_value = 3000
