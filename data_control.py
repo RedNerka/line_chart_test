@@ -189,8 +189,8 @@ def main():
             read_idx, write_idx = live_data_process(read_idx, write_idx, mean_val, std_val)
             print('new data update push...')
             push_commit()
-            print('sleep 10')
-            time.sleep(10)
+            print('sleep 60')
+            time.sleep(60)
         elif not is_rth and curr_time > rth_end:
             push_commit()
             print('job done, exiting...')
