@@ -25,7 +25,7 @@ def get_gdp_data():
     """
 
     # Instead of a CSV on disk, you could read from an HTTP endpoint here too.
-    DATA_FILENAME = Path(__file__).parent/'plot_data/plot_data.csv'
+    # DATA_FILENAME = Path(__file__).parent/'plot_data/plot_data.csv'
     raw_df = pd.read_csv('https://raw.githubusercontent.com/RedNerka/line_chart_test/refs/heads/main/plot_data/plot_data.csv')
     # MIN_YEAR = 1960
     # MAX_YEAR = 2022
