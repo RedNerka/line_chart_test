@@ -4,6 +4,8 @@ import math
 from pathlib import Path
 import altair as alt
 import time
+from streamlit_autorefresh import st_autorefresh
+import os
 
 # Set the title and favicon that appear in the Browser's tab bar.
 st.set_page_config(
@@ -73,6 +75,11 @@ def get_gdp_data():
 # Add some spacing
 # ''
 # ''
+st_autorefresh(interval=10 * 1000, key="data-refresh")
+
+if int(time.time()) % 60 < 2:  # 每分钟拉一次
+    os.system("git pull origin main")
+
 raw_df = get_gdp_data()
 
 min_value = 3000
