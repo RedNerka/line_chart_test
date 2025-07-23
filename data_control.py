@@ -36,7 +36,7 @@ def move_data(dt):
     if len(all_files) <= 0:
         return
     for file in all_files:
-        shutil.rmtree(file)
+        shutil.rmtree(LIVE_DATA_PATH + file)
     dt = dt.date().strftime('%Y%m%d')
     shutil.copy(HIST_DATA_SRC_PATH + dt + '_' + file, HIST_DATA_PATH + dt + '_' + file)
 
