@@ -164,7 +164,7 @@ def live_data_process(read_index, write_index, mean, std):
     return (read_index, write_index)
 
 def main():
-    is_rth = True
+    is_rth = False
     today_time = time.time()
     start = datetime.fromtimestamp(today_time, tz=tz).strftime('%Y%m%d')
 
