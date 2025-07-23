@@ -35,10 +35,10 @@ def move_data(dt):
     all_files = [file for file in os.listdir(LIVE_DATA_PATH) if file.endswith('.csv')]
     if len(all_files) <= 0:
         return
+    dt = dt.date().strftime('%Y%m%d')
     for file in all_files:
         os.remove(LIVE_DATA_PATH + file)
-    dt = dt.date().strftime('%Y%m%d')
-    shutil.copy(HIST_DATA_SRC_PATH + dt + '_' + file, HIST_DATA_PATH + dt + '_' + file)
+        shutil.copy(HIST_DATA_SRC_PATH + dt + '_' + file, HIST_DATA_PATH + dt + '_' + file)
 
 def checkRTH(is_rth): #checked
     curr_time = time.time()
@@ -164,7 +164,7 @@ def live_data_process(read_index, write_index, mean, std):
     return (read_index, write_index)
 
 def main():
-    is_rth = False
+    is_rth = True
     today_time = time.time()
     start = datetime.fromtimestamp(today_time, tz=tz).strftime('%Y%m%d')
 
