@@ -24,7 +24,7 @@ PLOT_PATH = f'{WORK_DIR}/plot_data/'
 tz = pytz.timezone("US/Central")
 
 rth_start = dtime(8, 30)
-rth_end = dtime(15, 0)
+rth_end = dtime(23, 0)
 
 def getData(future):
     filename = f'{future}_live_data_MIDPOINT.csv'
