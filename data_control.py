@@ -24,7 +24,7 @@ PLOT_PATH = f'{WORK_DIR}/plot_data/'
 tz = pytz.timezone("US/Central")
 
 rth_start = dtime(8, 30)
-rth_end = dtime(23, 0)
+rth_end = dtime(14, 58)
 
 def getData(future):
     filename = f'{future}_live_data_MIDPOINT.csv'
@@ -46,6 +46,7 @@ def checkRTH(is_rth): #checked
     if rth_start <= local_dt.time() <= rth_end:
         is_rth = True
     elif local_dt.time() > rth_end and is_rth:
+        time.sleep(300)
         is_rth = False
         move_data(local_dt)
     else:
