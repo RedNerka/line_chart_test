@@ -48,7 +48,7 @@ def checkRTH(is_rth): #checked
     elif local_dt.time() > rth_end and is_rth:
         time.sleep(300)
         is_rth = False
-        move_data(local_dt)
+        # move_data(local_dt)
     else:
         pass
     return is_rth, local_dt.time()
